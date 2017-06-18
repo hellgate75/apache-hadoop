@@ -31,7 +31,7 @@ ENV APACHE_HADOOP_IS_CLUSTER=no \
     APACHE_HADOOP_MAPRED_SHUFFLE_PARALLELCOPIES=50 \
     MACHINE_TIMEZONE="Europe/Dublin" \
     DEBIAN_FRONTEND=noninteractive \
-    HAHOOP_VERSION=2.5.2 \
+    HAHOOP_VERSION=2.6.5 \
     HADOOP_HOME=/usr/local/hadoop \
     HADOOP_USER=root \
     HADOOP_COMMON_HOME=/usr/local/hadoop \
@@ -55,6 +55,7 @@ ENV APACHE_HADOOP_IS_CLUSTER=no \
 USER root
 
 # download hadoop
+
 RUN curl -L https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-$HAHOOP_VERSION/hadoop-$HAHOOP_VERSION.tar.gz | tar -xz -C /usr/local/ && \
     cd /usr/local && ln -s ./hadoop-$HAHOOP_VERSION hadoop && \
     sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/java/default\nexport HADOOP_HOME=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
