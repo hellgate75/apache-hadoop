@@ -98,6 +98,16 @@ docker run -d -p 49707:49707 -p 2122:2122 -p 8030:8030 -p 8031:8031 -p 8032:8032
 ```
 
 
+### Test YARN console ###
+
+In order to access to yarn console you can use a web browser and type :
+```bash
+    http://{hostname or ip address}:8088
+    eg.:
+    http://localhost:8088 for a local container
+```
+
+
 ### License ###
 
 [LGPL 3](/LICENSE)
