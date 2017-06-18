@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM hellgate75/ubuntu-base:16.04
 
 MAINTAINER Fabrizio Torelli (hellgate75@gmail.com)
 
@@ -31,11 +31,7 @@ ENV APACHE_HADOOP_IS_CLUSTER=no \
     APACHE_HADOOP_MAPRED_SHUFFLE_PARALLELCOPIES=50 \
     MACHINE_TIMEZONE="Europe/Dublin" \
     DEBIAN_FRONTEND=noninteractive \
-    JAVA_VERSION=8u131 \
-    JAVA_RELEASE=b11 \
     HAHOOP_VERSION=2.8.0 \
-    JAVA_HOME=/usr/java/default \
-    PATH=$PATH:$JAVA_HOME/bin \
     HADOOP_HOME=/usr/local/hadoop \
     HADOOP_USER=root \
     HADOOP_COMMON_HOME=/usr/local/hadoop \
@@ -47,7 +43,6 @@ ENV APACHE_HADOOP_IS_CLUSTER=no \
     HDFS_NAMENODE_OPTS="-XX:+UseParallelGC -Xmx4g" \
     BOOTSTRAP=/etc/bootstrap.sh \
     NOTVISIBLE="in users profile" \
-    JAVA_HOME=/usr/java/default \
     HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop \
     HDFS_NAMENODE_USER=root \
     HDFS_DATANODE_USER=root \
@@ -61,36 +56,6 @@ ENV APACHE_HADOOP_IS_CLUSTER=no \
 
 
 USER root
-
-#RUN dpkg --force-help && exit 1
-
-RUN echo 'DPkg::Post-Invoke {"/bin/rm -f /var/cache/apt/archives/*.deb || true";};' | tee /etc/apt/apt.conf.d/no-cache && \
-  echo "deb http://mirror.math.princeton.edu/pub/ubuntu trusty main universe" >> /etc/apt/sources.list && \
-  apt-get update -q -y && \
-  apt-get dist-upgrade -y && \
-  export DEBIAN_FRONTEND=noninteractive && \
-  apt-get update && apt-get -q -y install apt-utils && apt-get -q -y -o Dpkg::Options::="--force-confold,overwrite,confdef" \
-  install --no-install-recommends wget curl tar sudo openssh-client rsync build-essential
-
-RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && \
-  ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa && cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
-
-RUN apt-get -q -y -o Dpkg::Options::="--force-confold,overwrite,confdef" install --no-install-recommends openssh-server ca-certificates openssl rpm \
-    python-pip python-sklearn python-pandas python-numpy python-matplotlib software-properties-common python-software-properties ssh pdsh net-tools tmux
-    # this latest package makes available add-apt-repository commnd
-
-RUN add-apt-repository -y ppa:webupd8team/java && \
-    apt-get update -q && \
-    echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections  && \
-    echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections  && \
-    DEBIAN_FRONTEND=noninteractive  apt-get install -y oracle-java8-installer && \
-    mkdir -p /usr/java && \
-    ln -s /usr/lib/jvm/java-8-oracle /usr/java/default && \
-    echo "===> clean up..."  && \
-    rm -rf /var/cache/apt/archives/*.deb  && \
-    apt-get -y autoremove  && \
-    apt-get clean  && \
-    rm -rf /var/lib/apt/lists/*
 
 # download hadoop
 RUN curl -L https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-$HAHOOP_VERSION/hadoop-$HAHOOP_VERSION.tar.gz | tar -xz -C /usr/local/ && \
