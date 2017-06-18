@@ -16,7 +16,7 @@ $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
 $HADOOP_HOME/bin/hdfs namenode -format -force -nonInteractive && \
 $HADOOP_HOME/sbin/start-all.sh
 
-sleep 20
+sleep 30
 netstat aux
 
 if [[ $1 == "-d" ]]; then

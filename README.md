@@ -88,6 +88,8 @@ Here Apache Hadoop single mode container environment variables :
 * `APACHE_HADOOP_SITE_BUFFER_SIZE` : Set Hadoop Buffer Size (default: 131072)
 * `APACHE_HADOOP_SITE_HOSTNAME`: Set Hadoop master site hostname, as default `localhost` will be replaced with machine hostname
 
+For more information about values : [Apache Hadoop Single Node](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/SingleCluster.html)
+
 
 Here Apache Hadoop cluster mode container environment variables :
 
