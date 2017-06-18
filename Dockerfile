@@ -8,8 +8,27 @@ ARG RUNLEVEL=1
 ENV APACHE_HADOOP_IS_CLUSTER=no \
     APACHE_HADOOP_IS_MASTER=no \
     APACHE_HADOOP_HDFS_REPLICATION=1 \
+    APACHE_HADOOP_HDFS_BLOCKSIZE=268435456 \
+    APACHE_HADOOP_HDFS_HANDLERCOUNT=100 \
     APACHE_HADOOP_SITE_HOSTNAME=localhost \
     APACHE_HADOOP_SITE_BUFFER_SIZE=131072 \
+    APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME=localhost \
+    APACHE_HADOOP_YARN_ACL_ENABLED=false \
+    APACHE_HADOOP_YARN_ADMIN_ACL=* \
+    APACHE_HADOOP_YARN_AGGREGATION_RETAIN_SECONDS=60 \
+    APACHE_HADOOP_YARN_AGGREGATION_RETAIN_CHECK_SECONDS=120 \
+    APACHE_HADOOP_YARN_LOG_AGGREGATION=false \
+    APACHE_HADOOP_MAPRED_JOB_HISTORY_HOSTNAME=localhost \
+    APACHE_HADOOP_MAPRED_JOB_HISTORY_PORT=10020 \
+    APACHE_HADOOP_MAPRED_JOB_HISTORY_WEBUI_HOSTNAME=localhost \
+    APACHE_HADOOP_MAPRED_JOB_HISTORY_WEBUI_PORT=19888 \
+    APACHE_HADOOP_MAPRED_MAP_MEMORY_MBS=1536 \
+    APACHE_HADOOP_MAPRED_MAP_JAVA_OPTS="-Xmx1024M" \
+    APACHE_HADOOP_MAPRED_RED_MEMORY_MBS=3072 \
+    APACHE_HADOOP_MAPRED_RED_JAVA_OPTS="-Xmx2560M" \
+    APACHE_HADOOP_MAPRED_SORT_MEMORY_MBS=512 \
+    APACHE_HADOOP_MAPRED_SORT_FACTOR=100 \
+    APACHE_HADOOP_MAPRED_SHUFFLE_PARALLELCOPIES=50 \
     MACHINE_TIMEZONE="Europe/Dublin" \
     DEBIAN_FRONTEND=noninteractive \
     JAVA_VERSION=8u131 \
@@ -103,14 +122,16 @@ ADD docker-start-hadoop.sh /usr/local/bin/docker-start-hadoop
 # fix the 254 error code
 RUN chown root:root /etc/bootstrap.sh && chmod 700 /etc/bootstrap.sh && chown root:root /usr/local/bin/docker-start-hadoop && chmod 700 /usr/local/bin/docker-start-hadoop && \
     chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh && sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config && echo "UsePAM no" >> /etc/ssh/sshd_config && \
-    echo "Port 2122" >> /etc/ssh/sshd_config
+    echo "Port 2122" >> /etc/ssh/sshd_config && mkdir -p /etc/config/hadoop && mkdir -p /etc/hadoop && ln -s /usr/local/hadoop-$HAHOOP_VERSION/etc/hadoop /etc/hadoop && rm -f $HADOOP_HOME/etc/hadoop/core-site.xml \
+    $HADOOP_HOME/etc/hadoop/hdfs-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml && touch $HADOOP_HOME/etc/hadoop/mapred-site.xml && touch $HADOOP_HOME/etc/hadoop/hdfs-site.xml && \
+    touch $HADOOP_HOME/etc/hadoop/yarn-site.xml && touch $HADOOP_HOME/etc/hadoop/core-site.xml
 
 WORKDIR $HADOOP_HOME
 
 
 CMD ["docker-start-hadoop", "-daemon"]
 
-VOLUME ["/user/root/data/hadoop/hdfs/datanode", "/user/root/data/hadoop/hdfs/namenode", "/user/root/data/hadoop/hdfs/checkpoint"]
+VOLUME ["/user/root/data/hadoop/hdfs/datanode", "/user/root/data/hadoop/hdfs/namenode", "/user/root/data/hadoop/hdfs/checkpoint", "/etc/config/hadoop"]
 
 # Exposed ports
 # HDFS ports :

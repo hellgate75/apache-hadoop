@@ -4,6 +4,10 @@
         <value>mapreduce_shuffle</value>
     </property>
     <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>RM_HOSTNAME</value>
+    </property>
+    <property>
             <name>yarn.nodemanager.env-whitelist</name>
             <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
     </property>
@@ -31,5 +35,24 @@
     <name>yarn.nodemanager.delete.debug-delay-sec</name>
     <value>600</value>
   </property>
-
+  <property>
+    <name>yarn.acl.enable</name>
+    <value>YANR_ACL_ENABLED</value>
+  </property>
+  <property>
+    <name>yarn.admin.acl</name>
+    <value>ADMIN_ACL</value>
+  </property>
+  <property>
+    <name>yarn.log-aggregation-enable</name>
+    <value>LOG_AGGREGATION</value>
+  </property>
+  <property>
+    <name>yarn.log-aggregation.retain-seconds</name>
+    <value>AGGREGATION_RETAIN</value>
+  </property>
+  <property>
+    <name>yarn.log-aggregation.retain-check-interval-seconds</name>
+    <value>AGGREGATION_RETAIN_CHECK</value>
+  </property>
 </configuration>

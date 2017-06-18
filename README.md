@@ -34,16 +34,28 @@ This doscker images has been designed to be a test, development, integration, pr
 
 Here some information :
 
-Volumes : /user/root/data/hadoop/hdfs/datanode, /user/root/data/hadoop/hdfs/namenode, /user/root/data/hadoop/hdfs/checkpoint
+Volumes : /user/root/data/hadoop/hdfs/datanode, /user/root/data/hadoop/hdfs/namenode, /user/root/data/hadoop/hdfs/checkpoint, /etc/config/hadoop
 
 `/user/root/data/hadoop/hdfs/datanode` :
+
 DataNode storage folder.
 
 `/user/root/data/hadoop/hdfs/namenode` :
+
 NameNode storage folder.
 
 `/user/root/data/hadoop/hdfs/checkpoint`:
+
 Check Point and Check Point Edits storage folder.
+
+`/etc/config/hadoop`:
+
+Configuration folder, and expected/suitable files are :
+
+* `core-site.xml`: Core Site custmized configuration file
+* `yarn-site.xml`: Yarn Site custmized configuration file
+* `hdfs-site.xml`: HDFS Site custmized configuration file
+* `mapred-site.xml`: Map Reduce Site custmized configuration file
 
 
 Ports:
@@ -64,6 +76,7 @@ YARN ports:
 
 
 Other Apache Hadoop ports:
+
 49707 2122
 
 
@@ -80,10 +93,31 @@ Here Apache Hadoop cluster mode container environment variables :
 
 * `MACHINE_TIMEZONE` : Set Machine timezone ([See Timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
 * `APACHE_HADOOP_IS_CLUSTER` : Set cluster mode (yes/no)
-* `APACHE_HADOOP_IS_MASTER` : Does this node is assumed as cluter master node? (yes/no)
+* `APACHE_HADOOP_IS_MASTER` : Does this node lead cluster workers as the cluter master node? (yes/no)
 * `APACHE_HADOOP_SITE_BUFFER_SIZE` : Set Hadoop Buffer Size (default: 131072)
 * `APACHE_HADOOP_SITE_HOSTNAME`: Set Hadoop master site hostname, as default `localhost` will be replaced with machine hostname
+* `APACHE_HADOOP_HDFS_REPLICATION`: Set HDFS Replication factor  (default: 1)
+* `APACHE_HADOOP_HDFS_BLOCKSIZE`: Set HDFS Block Size (default: 268435456)
+* `APACHE_HADOOP_HDFS_HANDLERCOUNT`: Set HDFS Header Count (default: 100)
+* `APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME`: Set Yarn Resource Manager hostname, as default `localhost` will be replaced with machine hostname
+* `APACHE_HADOOP_YARN_ACL_ENABLED`: Set Yarn ACL Enabled (default: false values: true|false)
+* `APACHE_HADOOP_YARN_ADMIN_ACL`: Set Admin ACL Name (default: `*`)
+* `APACHE_HADOOP_YARN_AGGREGATION_RETAIN_SECONDS`: Set Yarn Log aggregation retain time in seconds (default: 60)
+* `APACHE_HADOOP_YARN_AGGREGATION_RETAIN_CHECK_SECONDS`: Set Yarn Log aggregation retain chack time in seconds (default: 120)
+* `APACHE_HADOOP_YARN_LOG_AGGREGATION`: Set Yarn Log Aggregation enabled (default: false values: true|false)
+* `APACHE_HADOOP_MAPRED_JOB_HISTORY_HOSTNAME`: Set Job History Server Address/Hostname, as default `localhost` will be replaced with machine hostname
+* `APACHE_HADOOP_MAPRED_JOB_HISTORY_PORT`: Set Job History Server Port (default: 10020)
+* `APACHE_HADOOP_MAPRED_JOB_HISTORY_WEBUI_HOSTNAME`: Set Job History Web UI Server Address/Hostname, as default `localhost` will be replaced with machine hostname
+* `APACHE_HADOOP_MAPRED_JOB_HISTORY_WEBUI_PORT`:Set Job History Web UI Server Port (default: 19888)
+* `APACHE_HADOOP_MAPRED_MAP_MEMORY_MBS`: Set Map Reduce Map allocated Memory in MBs (default: 1536)
+* `APACHE_HADOOP_MAPRED_MAP_JAVA_OPTS`: Set Map Reduce Map Java options  (default: `-Xmx1024M`)
+* `APACHE_HADOOP_MAPRED_RED_MEMORY_MBS`: Set Map Reduce Reduce allocated Memory in MBs (default: 3072)
+* `APACHE_HADOOP_MAPRED_RED_JAVA_OPTS`: Set Map Reduce Reduce Java options (default: `-Xmx2560M`)
+* `APACHE_HADOOP_MAPRED_SORT_MEMORY_MBS`: Set Map Reduce Sort allocated Memory in MBs (default: 512)
+* `APACHE_HADOOP_MAPRED_SORT_FACTOR`: Set Map Reduce Sort factor (default: 100)
+* `APACHE_HADOOP_MAPRED_SHUFFLE_PARALLELCOPIES`: Set Map Reduce Shuffle parallel copies limit (default: 50)
 
+For more information about values : [Apache Hadoop Cluster Setup](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/ClusterSetup.html)
 
 
 ### Sample command ###

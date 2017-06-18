@@ -3,4 +3,48 @@
         <name>mapreduce.framework.name</name>
         <value>yarn</value>
     </property>
+    <property>
+        <name>mapreduce.map.memory.mb</name>
+        <value>MAPRED_MAP_MEMORY</value>
+    </property>
+    <property>
+        <name>mapreduce.map.java.opts</name>
+        <value>MAPRED_MAP_JAVA_OPTS</value>
+    </property>
+    <property>
+        <name>mapreduce.reduce.java.opts</name>
+        <value>MAPRED_RED_JAVA_OPTS</value>
+    </property>
+    <property>
+        <name>mapreduce.reduce.memory.mb</name>
+        <value>MAPRED_RED_MEMORY</value>
+    </property>
+    <property>
+        <name>mapreduce.task.io.sort.mb</name>
+        <value>MAPRED_SORT_MEMORY</value>
+    </property>
+    <property>
+        <name>mapreduce.task.io.sort.factor</name>
+        <value>MAPRED_SORT_FACTOR</value>
+    </property>
+    <property>
+        <name>mapreduce.reduce.shuffle.parallelcopies</name>
+        <value>MAPRED_SHUFFLE</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>JOB_HISTORY_HOSTNAME:JOB_HISTORY_PORT</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.webapp.address</name>
+        <value>JOB_HISTORY_WEBUI_HOSTNAME:JOB_HISTORY_WEBUI_PORT</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.intermediate-done-dir</name>
+        <value>/mr-history/temp</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.intermediate-done-dir</name>
+        <value>/mr-history/done</value>
+    </property>
 </configuration>

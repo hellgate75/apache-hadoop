@@ -2,11 +2,22 @@
 
 #tmux
 
+echo "Checking files in /etc/config/hadoop folder ..."
+if [[ "" != "$(ls /etc/config/hadoop/)" ]]; then
+  echo "Copy new configuration files from folder /etc/config/hadoop ..."
+  cp /etc/config/hadoop/* /etc/hadoop/
+fi
+
 echo "Starting Apache Hadoop $HAHOOP_VERSION ..."
 if [[ $APACHE_HADOOP_SITE_HOSTNAME == "localhost" ]]; then
   export APACHE_HADOOP_SITE_HOSTNAME="$(hostname)"
   echo "Changed Host name :  $APACHE_HADOOP_SITE_HOSTNAME"
 fi
+if [[ $APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME == "localhost" ]]; then
+  export APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME="$(hostname)"
+  echo "Changed Resource Manager Host name :  $APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME"
+fi
+
 if [[ "yes" != "$APACHE_HADOOP_IS_CLUSTER" ]]; then
   sed s/HOSTNAME/$APACHE_HADOOP_SITE_HOSTNAME/ $HADOOP_HOME/etc/hadoop/singlenode/core-site.xml.template | sed s/BUFFERSIZE/$APACHE_HADOOP_SITE_BUFFER_SIZE/ > $HADOOP_HOME/etc/hadoop/core-site.xml
 else
@@ -15,6 +26,7 @@ fi
 if ! [[ -e /root/hadoop_configured ]]; then
   echo "Configuring Apache Hadoop $HAHOOP_VERSION ..."
   echo "Host name :  $APACHE_HADOOP_SITE_HOSTNAME"
+  echo "Resource Manager Host name :  $APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME"
   mkdir -p /user/$HADOOP_USER/data/hadoop/hdfs/namenode
   mkdir -p /user/$HADOOP_USER/data/hadoop/hdfs/checkpoint
   mkdir -p /user/$HADOOP_USER/data/hadoop/hdfs/datanode
@@ -24,29 +36,84 @@ if ! [[ -e /root/hadoop_configured ]]; then
 
   if [[ "yes" != "$APACHE_HADOOP_IS_CLUSTER" ]]; then
     echo "Configuring Apache Hadoop $HAHOOP_VERSION Single Node ..."
-    touch $HADOOP_HOME/etc/hadoop/core-site.xml
-    sed s/USERNAME/$HADOOP_USER/ $HADOOP_HOME/etc/hadoop/singlenode/hdfs-site.xml.template > $HADOOP_HOME/etc/hadoop/hdfs-site.xml
-#    cp $HADOOP_HOME/etc/hadoop/singlenode/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
-    cp $HADOOP_HOME/etc/hadoop/singlenode/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
-    cp $HADOOP_HOME/etc/hadoop/singlenode/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
+    if [[ "" == "$(cat $HADOOP_HOME/etc/hadoop/core-site.xml)" ]]; then
+      touch $HADOOP_HOME/etc/hadoop/core-site.xml
+      echo -e "Hadoop Configuration: \nMASTER_HOSTNAME: $APACHE_HADOOP_SITE_HOSTNAME\nBUFFER_SIZE: $APACHE_HADOOP_SITE_BUFFER_SIZE\n"
+      sed s/HOSTNAME/$APACHE_HADOOP_SITE_HOSTNAME/ $HADOOP_HOME/etc/hadoop/singlenode/core-site.xml.template | sed s/BUFFERSIZE/$APACHE_HADOOP_SITE_BUFFER_SIZE/  > $HADOOP_HOME/etc/hadoop/core-site.xml
+    fi
+    if [[ "" == "$(cat $HADOOP_HOME/etc/hadoop/hdfs-site.xml)" ]]; then
+      touch $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+      echo -e "HDFS Configuration: \nREPLICATION: $APACHE_HADOOP_HDFS_REPLICATION\nHADOOP_USER: $HADOOP_USER\n"
+      sed s/USERNAME/$HADOOP_USER/ $HADOOP_HOME/etc/hadoop/singlenode/hdfs-site.xml.template > $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+    fi
+    if [[ "" == "$(cat $HADOOP_HOME/etc/hadoop/yarn-site.xml)" ]]; then
+      touch $HADOOP_HOME/etc/hadoop/yarn-site.xml
+      echo -e "YARN Configuration: \nRESOURCE_MANAGER: $APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME\n"
+      sed s/RM_HOSTNAME/$APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME/ $HADOOP_HOME/etc/hadoop/singlenode/yarn-site.xml.template > $HADOOP_HOME/etc/hadoop/yarn-site.xml
+    fi
+    if [[ "" == "$(cat $HADOOP_HOME/etc/hadoop/mapred-site.xml)" ]]; then
+      touch $HADOOP_HOME/etc/hadoop/mapred-site.xml
+      echo -e "Map Reduce Configuration: default\n"
+      cp $HADOOP_HOME/etc/hadoop/singlenode/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
+    fi
   else
     if [[ "no" != "$APACHE_HADOOP_IS_CLUSTER" ]]; then
       echo "Invalid cluster flag preference : $APACHE_HADOOP_IS_CLUSTER\nExpected: (yes/no) found : $APACHE_HADOOP_IS_CLUSTER"
       exit 1
     fi
     echo "Configuring Apache Hadoop $HAHOOP_VERSION Cluster Node ..."
-    touch $HADOOP_HOME/etc/hadoop/core-site.xml
-    touch $HADOOP_HOME/etc/hadoop/hdfs-site.xml
-    sed s/HOSTNAME/$APACHE_HADOOP_SITE_HOSTNAME/ $HADOOP_HOME/etc/hadoop/clusternode/core-site.xml.template | sed s/BUFFERSIZE/$APACHE_HADOOP_SITE_BUFFER_SIZE/ > $HADOOP_HOME/etc/hadoop/core-site.xml
-    sed s/REPLICATION/$APACHE_HADOOP_HDFS_REPLICATION/ $HADOOP_HOME/etc/hadoop/clusternode/hdfs-site.xml.template | sed s/USERNAME/$HADOOP_USER/ > $HADOOP_HOME/etc/hadoop/hdfs-site.xml
-    cp $HADOOP_HOME/etc/hadoop/singlenode/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
-    cp $HADOOP_HOME/etc/hadoop/singlenode/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
+    if [[ "$APACHE_HADOOP_IS_MASTER" == "yes" ]]; then
+      echo "Master Cluster Node"
+    else
+      echo "Slave Cluster Node"
+    fi
+    if [[ "" == "$(cat $HADOOP_HOME/etc/hadoop/core-site.xml)" ]]; then
+      touch $HADOOP_HOME/etc/hadoop/core-site.xml
+      echo -e "Hadoop Configuration: \nMASTER_HOSTNAME: $APACHE_HADOOP_SITE_HOSTNAME\nBUFFER_SIZE: $APACHE_HADOOP_SITE_BUFFER_SIZE\n"
+      sed s/HOSTNAME/$APACHE_HADOOP_SITE_HOSTNAME/ $HADOOP_HOME/etc/hadoop/clusternode/core-site.xml.template | sed s/BUFFERSIZE/$APACHE_HADOOP_SITE_BUFFER_SIZE/  > $HADOOP_HOME/etc/hadoop/core-site.xml
+    fi
+    if [[ "" == "$(cat $HADOOP_HOME/etc/hadoop/hdfs-site.xml)" ]]; then
+      touch $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+      echo -e "HDFS Configuration: \nREPLICATION: $APACHE_HADOOP_HDFS_REPLICATION\nHADOOP_USER: $HADOOP_USER\nBLOCK_SIZE: $APACHE_HADOOP_HDFS_BLOCKSIZE\nHADLER_COUNT: $APACHE_HADOOP_HDFS_HANDLERCOUNT\n"
+      sed s/REPLICATION/$APACHE_HADOOP_HDFS_REPLICATION/ $HADOOP_HOME/etc/hadoop/clusternode/hdfs-site.xml.template | sed s/USERNAME/$HADOOP_USER/ | \
+      sed s/BLOCKSIZE/$APACHE_HADOOP_HDFS_BLOCKSIZE/ | sed s/HANDLERCOUNT/$APACHE_HADOOP_HDFS_HANDLERCOUNT/ > $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+    fi
+    if [[ "" == "$(cat $HADOOP_HOME/etc/hadoop/yarn-site.xml)" ]]; then
+      touch $HADOOP_HOME/etc/hadoop/yarn-site.xml
+      if [[ "$APACHE_HADOOP_YARN_ACL_ENABLED" != 'true' ]]; then
+        if [[ "$APACHE_HADOOP_YARN_ACL_ENABLED" != 'false' ]]; then
+          export APACHE_HADOOP_YARN_ACL_ENABLED=false
+        fi
+      fi
+      if [[ "$APACHE_HADOOP_YARN_LOG_AGGREGATION" != 'true' ]]; then
+        if [[ "$APACHE_HADOOP_YARN_LOG_AGGREGATION" != 'false' ]]; then
+          export APACHE_HADOOP_YARN_ACL_ENABLED=false
+        fi
+      fi
+      echo -e "Yarn Configuration: \nRESOURCE_MANAGER: $APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME\nACL_ENABLED: $APACHE_HADOOP_YARN_ACL_ENABLED\nADMIN_ACL: $APACHE_HADOOP_YARN_ADMIN_ACL\nLOG AGGREGATION: $APACHE_HADOOP_YARN_LOG_AGGREGATION\n"
+      sed s/YANR_ACL_ENABLED/$APACHE_HADOOP_YARN_ACL_ENABLED/ $HADOOP_HOME/etc/hadoop/clusternode/yarn-site.xml.template | sed s/ADMIN_ACL/$APACHE_HADOOP_YARN_ADMIN_ACL/ | \
+      sed s/LOG_AGGREGATION/$APACHE_HADOOP_YARN_LOG_AGGREGATION/ | sed s/AGGREGATION_RETAIN/$APACHE_HADOOP_YARN_AGGREGATION_RETAIN_SECONDS/ | \
+      sed s/AGGREGATION_RETAIN_CHECK/$APACHE_HADOOP_YARN_AGGREGATION_RETAIN_CHECK_SECONDS/ | sed s/RM_HOSTNAME/$APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME/ > $HADOOP_HOME/etc/hadoop/yarn-site.xml
+    fi
+    if [[ "" == "$(cat $HADOOP_HOME/etc/hadoop/mapred-site.xml)" ]]; then
+      touch $HADOOP_HOME/etc/hadoop/mapred-site.xml
+      echo -e "Map Reduce Configuration: \nMAP_MEM_MBS: $APACHE_HADOOP_MAPRED_MAP_MEMORY_MBS\nMAP_OPTS: $APACHE_HADOOP_MAPRED_MAP_JAVA_OPTS\nRED_MEM_MBS: $APACHE_HADOOP_MAPRED_RED_MEMORY_MBS\nRED_OPTS: $APACHE_HADOOP_MAPRED_RED_JAVA_OPTS\n"
+      echo -e "SORT_MEM_MBS: $APACHE_HADOOP_MAPRED_SORT_MEMORY_MBS\nSORT_FACT: $APACHE_HADOOP_MAPRED_SORT_FACTOR\nSHUGGLE_COPIES: $APACHE_HADOOP_MAPRED_SHUFFLE_PARALLELCOPIES\n"
+      echo -e "JOB_HISTORY_ADDR: $APACHE_HADOOP_MAPRED_JOB_HISTORY_HOSTNAME\nJOB_HISTORY_PORT: $APACHE_HADOOP_MAPRED_JOB_HISTORY_PORT\nJI_WEB_ADDR: $APACHE_HADOOP_MAPRED_JOB_HISTORY_WEBUI_HOSTNAME\n"
+      echo -e "JI_WEB_PORT: $APACHE_HADOOP_MAPRED_JOB_HISTORY_WEBUI_PORT\n"
+      sed s/MAPRED_MAP_MEMORY/$APACHE_HADOOP_MAPRED_MAP_MEMORY_MBS/ $HADOOP_HOME/etc/hadoop/clusternode/mapred-site.xml.template | sed s/MAPRED_MAP_JAVA_OPTS/$APACHE_HADOOP_MAPRED_MAP_JAVA_OPTS/ | \
+      sed s/MAPRED_RED_JAVA_OPTS/$APACHE_HADOOP_MAPRED_RED_JAVA_OPTS/ | sed s/MAPRED_RED_MEMORY/$APACHE_HADOOP_MAPRED_RED_MEMORY_MBS/ | \
+      sed s/MAPRED_SORT_MEMORY/$APACHE_HADOOP_MAPRED_SORT_MEMORY_MBS/ | sed s/MAPRED_SORT_FACTOR/$APACHE_HADOOP_MAPRED_SORT_FACTOR/ | \
+      sed s/MAPRED_SHUFFLE/$APACHE_HADOOP_MAPRED_SHUFFLE_PARALLELCOPIES/ | sed s/JOB_HISTORY_HOSTNAME/$APACHE_HADOOP_MAPRED_JOB_HISTORY_HOSTNAME/ | \
+      sed s/JOB_HISTORY_PORT/$APACHE_HADOOP_MAPRED_JOB_HISTORY_PORT/ | sed s/JOB_HISTORY_WEBUI_HOSTNAME/$APACHE_HADOOP_MAPRED_JOB_HISTORY_WEBUI_HOSTNAME/ | \
+      sed s/JOB_HISTORY_WEBUI_PORT/$APACHE_HADOOP_MAPRED_JOB_HISTORY_WEBUI_PORT/ > $HADOOP_HOME/etc/hadoop/mapred-site.xml
+    fi
 fi
-  if [[ -e /usr/share/zoneinfo/$MACHINE_TIMEZONE ]]; then
-    ln -fs /usr/share/zoneinfo/$MACHINE_TIMEZONE /etc/localtime
-    echo "Current Timezone: $(cat /etc/timezone)"
-    dpkg-reconfigure tzdata
-  fi
+if [[ -e /usr/share/zoneinfo/$MACHINE_TIMEZONE ]]; then
+  ln -fs /usr/share/zoneinfo/$MACHINE_TIMEZONE /etc/localtime
+  echo "Current Timezone: $(cat /etc/timezone)"
+  dpkg-reconfigure tzdata
+fi
 
   service ssh start
   $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
