@@ -110,6 +110,8 @@ WORKDIR $HADOOP_HOME
 
 CMD ["docker-start-hadoop", "-daemon"]
 
+VOLUME ["/user/root/data/hadoop/hdfs/datanode", "/user/root/data/hadoop/hdfs/namenode", "/user/root/data/hadoop/hdfs/checkpoint"]
+
 # Exposed ports
 # HDFS ports :
 # 50010 50020 50070 50075 50090 8020 9000

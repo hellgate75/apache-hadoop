@@ -34,11 +34,17 @@ This doscker images has been designed to be a test, development, integration, pr
 
 Here some information :
 
-Volumes : /data , /flows
+Volumes : /user/root/data/hadoop/hdfs/datanode, /user/root/data/hadoop/hdfs/namenode, /user/root/data/hadoop/hdfs/checkpoint
 
-Data Volume is used to store logs and archives.
+`/user/root/data/hadoop/hdfs/datanode` :
+DataNode storage folder.
 
-Flows volumes is used to store or import flows files.
+`/user/root/data/hadoop/hdfs/namenode` :
+NameNode storage folder.
+
+`/user/root/data/hadoop/hdfs/checkpoint`:
+Check Point and Check Point Edits storage folder.
+
 
 Ports:
 
@@ -67,6 +73,7 @@ Here Apache Hadoop single mode container environment variables :
 
 * `MACHINE_TIMEZONE` : Set Machine timezone ([See Timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
 * `APACHE_HADOOP_SITE_BUFFER_SIZE` : Set Hadoop Buffer Size (default: 131072)
+* `APACHE_HADOOP_SITE_HOSTNAME`: Set Hadoop master site hostname, as default `localhost` will be replaced with machine hostname
 
 
 Here Apache Hadoop cluster mode container environment variables :
@@ -75,6 +82,7 @@ Here Apache Hadoop cluster mode container environment variables :
 * `APACHE_HADOOP_IS_CLUSTER` : Set cluster mode (yes/no)
 * `APACHE_HADOOP_IS_MASTER` : Does this node is assumed as cluter master node? (yes/no)
 * `APACHE_HADOOP_SITE_BUFFER_SIZE` : Set Hadoop Buffer Size (default: 131072)
+* `APACHE_HADOOP_SITE_HOSTNAME`: Set Hadoop master site hostname, as default `localhost` will be replaced with machine hostname
 
 
 
@@ -85,7 +93,8 @@ Here a sample command to run Apache Hadoop container:
 ```bash
 docker run -d -p 49707:49707 -p 2122:2122 -p 8030:8030 -p 8031:8031 -p 8032:8032 -p 8033:8033 -p 8040:8040 -p 8042:8042 \
        -p 8088:8088 -p 10020:10020 -p 19888:19888  -p 50010:50010  -p 50020:50020  -p 50070:50070  -p 50075:50075  -p 50090:50090 \
-        -p 8020:8020  -p 9000:9000 --name my-apache-hadoop hellgate75/apache-hadoop:latest
+        -p 8020:8020  -p 9000:9000 -v my/datanode/dir:/user/root/data/hadoop/hdfs/datanode -v my/namenode/dir:/user/root/data/hadoop/hdfs/namenode \
+         -v my/checkpoint/dir:/user/root/data/hadoop/hdfs/checkpoint --name my-apache-hadoop hellgate75/apache-hadoop:latest
 ```
 
 
