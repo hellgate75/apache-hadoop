@@ -22,7 +22,8 @@ if [[ -z "$SPARK_RUNNING" ]]; then
   $HADOOP_HOME/sbin/stop-all.sh && \
   $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
   $HADOOP_HOME/bin/hdfs namenode -format -force -nonInteractive && \
-  $HADOOP_HOME/sbin/start-all.sh
+  $HADOOP_HOME/sbin/start-dfs.sh && \
+  $HADOOP_HOME/sbin/start-yarn.sh
 fi
 
 sleep 30

@@ -89,13 +89,13 @@ fi
 
 echo "Starting Apache Hadoop $HAHOOP_VERSION ..."
 if [[ $APACHE_HADOOP_SITE_HOSTNAME == "localhost" ]]; then
-  #export APACHE_HADOOP_SITE_HOSTNAME="$(hostname)"
-  export APACHE_HADOOP_SITE_HOSTNAME="$(ifconfig -a | grep 'inet addr:'| grep -v '127.0.0.1' | sed s/inet\ addr://g | awk 'BEGIN {FS = OFS = " "}{print $1}')"
+  export APACHE_HADOOP_SITE_HOSTNAME="$(hostname)"
+  #export APACHE_HADOOP_SITE_HOSTNAME="$(ifconfig -a | grep 'inet addr:'| grep -v '127.0.0.1' | sed s/inet\ addr://g | awk 'BEGIN {FS = OFS = " "}{print $1}')"
   echo "Changed Host name :  $APACHE_HADOOP_SITE_HOSTNAME"
 fi
 if [[ $APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME == "localhost" ]]; then
-  #export APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME="$(hostname)"
-  export APACHE_HADOOP_SITE_HOSTNAME="$(ifconfig -a | grep 'inet addr:'| grep -v '127.0.0.1' | sed s/inet\ addr://g | awk 'BEGIN {FS = OFS = " "}{print $1}')"
+  export APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME="$(hostname)"
+  #export APACHE_HADOOP_SITE_HOSTNAME="$(ifconfig -a | grep 'inet addr:'| grep -v '127.0.0.1' | sed s/inet\ addr://g | awk 'BEGIN {FS = OFS = " "}{print $1}')"
   echo "Changed Resource Manager Host name :  $APACHE_HADOOP_YARN_RESOURCE_MANAGER_HOSTNAME"
 fi
 
