@@ -57,7 +57,7 @@ Configuration folder, and expected/suitable files are :
 * `hdfs-site.xml`: HDFS Site custmized configuration file
 * `mapred-site.xml`: Map Reduce Site custmized configuration file
 
-If this folder contains a shell fine named `init-hadoop-env.sh`, it will be sourced, and here you can place any system Apache™ Hadoop® variable (environment and configuration) or simple operation to execute before Apache™ Hadoop® starts.
+If this folder contains a shell fine named `init-hadoop-env.sh`, it will be sourced, and here you can place any system Apache™ Hadoop® variable (environment and configuration) or simple operation to execute before Apache™ Hadoop® starts. This folder will be used to download and decompress configuration files from remote http tar gz archive.
 
 
 Ports:
@@ -96,7 +96,7 @@ For more information about values : [Apache™ Hadoop® Single Node](http://hado
 Here Apache™ Hadoop® cluster mode container environment variables :
 
 * `MACHINE_TIMEZONE` : Set Machine timezone ([See Timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
-* `HADOOP_CONFIG_TGZ_URL` : Url of a tar gz file within Apache™ Hadoop® configuration files. If this archive contains a shell script named `init-hadoop.sh`, it will be executed before to start Apache™ Hadoop® (default: "")
+* `HADOOP_CONFIG_TGZ_URL` : Url of a tar gz file within Apache™ Hadoop® configuration files. If this archive contains a shell script named `bootstrap.sh`, it will be executed before to start Apache™ Hadoop® (default: "")
 * `APACHE_HADOOP_IS_CLUSTER` : Set cluster mode (yes/no)
 * `APACHE_HADOOP_IS_MASTER` : Does this node lead cluster workers as the cluter master node? (yes/no)
 * `APACHE_HADOOP_SITE_BUFFER_SIZE` : Set Hadoop Buffer Size (default: 131072)
