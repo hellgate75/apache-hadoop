@@ -1,14 +1,14 @@
-# Apache Hadoop Docker image
+# Apache™ Hadoop® Docker image
 
 
-Docker Image for Apache Hadoop Single/Cluster Node
+Docker Image for Apache™ Hadoop® Single/Cluster Node
 
 
 ### Introduction ###
 
 The Apache™ Hadoop® project develops open-source software for reliable, scalable, distributed computing.
 
-The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models. It is designed to scale up from single servers to thousands of machines, each offering local computation and storage. Rather than rely on hardware to deliver high-availability, the library itself is designed to detect and handle failures at the application layer, so delivering a highly-available service on top of a cluster of computers, each of which may be prone to failures.
+The Apache™ Hadoop® software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models. It is designed to scale up from single servers to thousands of machines, each offering local computation and storage. Rather than rely on hardware to deliver high-availability, the library itself is designed to detect and handle failures at the application layer, so delivering a highly-available service on top of a cluster of computers, each of which may be prone to failures.
 
 
 The project includes these modules:
@@ -19,13 +19,13 @@ The project includes these modules:
 *  Hadoop MapReduce: A YARN-based system for parallel processing of large data sets.
 
 
-Here some more info on Apache Hadoop :
+Here some more info on Apache™ Hadoop® :
 http://hadoop.apache.org/
 
 
 ### Goals ###
 
-This doscker images has been designed to be a test, development, integration, production environment for Apache Hadoop single node and cluster instances.
+This doscker images has been designed to be a test, development, integration, production environment for Apache™ Hadoop® single node and cluster instances.
 *No warranties for production use.*
 
 
@@ -57,6 +57,8 @@ Configuration folder, and expected/suitable files are :
 * `hdfs-site.xml`: HDFS Site custmized configuration file
 * `mapred-site.xml`: Map Reduce Site custmized configuration file
 
+If this folder contains a shell fine named `init-hadoop-env.sh`, it will be sourced, and here you can place any system Apache™ Hadoop® variable (environment and configuration) or simple operation to execute before Apache™ Hadoop® starts.
+
 
 Ports:
 
@@ -75,25 +77,26 @@ YARN ports:
 8030 8031 8032 8033 8040 8042 8088
 
 
-Other Apache Hadoop ports:
+Other Apache™ Hadoop® ports:
 
 49707 2122
 
 
 ### Docker Environment Variable ###
 
-Here Apache Hadoop single mode container environment variables :
+Here Apache™ Hadoop® single mode container environment variables :
 
 * `MACHINE_TIMEZONE` : Set Machine timezone ([See Timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
 * `APACHE_HADOOP_SITE_BUFFER_SIZE` : Set Hadoop Buffer Size (default: 131072)
 * `APACHE_HADOOP_SITE_HOSTNAME`: Set Hadoop master site hostname, as default `localhost` will be replaced with machine hostname
 
-For more information about values : [Apache Hadoop Single Node](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/SingleCluster.html)
+For more information about values : [Apache™ Hadoop® Single Node](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/SingleCluster.html)
 
 
-Here Apache Hadoop cluster mode container environment variables :
+Here Apache™ Hadoop® cluster mode container environment variables :
 
 * `MACHINE_TIMEZONE` : Set Machine timezone ([See Timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
+* `HADOOP_CONFIG_TGZ_URL` : Url of a tar gz file within Apache™ Hadoop® configuration files. If this archive contains a shell script named `init-hadoop.sh`, it will be executed before to start Apache™ Hadoop® (default: "")
 * `APACHE_HADOOP_IS_CLUSTER` : Set cluster mode (yes/no)
 * `APACHE_HADOOP_IS_MASTER` : Does this node lead cluster workers as the cluter master node? (yes/no)
 * `APACHE_HADOOP_SITE_BUFFER_SIZE` : Set Hadoop Buffer Size (default: 131072)
@@ -119,18 +122,18 @@ Here Apache Hadoop cluster mode container environment variables :
 * `APACHE_HADOOP_MAPRED_SORT_FACTOR`: Set Map Reduce Sort factor (default: 100)
 * `APACHE_HADOOP_MAPRED_SHUFFLE_PARALLELCOPIES`: Set Map Reduce Shuffle parallel copies limit (default: 50)
 
-For more information about values : [Apache Hadoop Cluster Setup](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/ClusterSetup.html)
+For more information about values : [Apache™ Hadoop® Cluster Setup](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/ClusterSetup.html)
 
 
 ### Sample command ###
 
-Here a sample command to run Apache Hadoop container:
+Here a sample command to run Apache™ Hadoop® container:
 
 ```bash
 docker run -d -p 49707:49707 -p 2122:2122 -p 8030:8030 -p 8031:8031 -p 8032:8032 -p 8033:8033 -p 8040:8040 -p 8042:8042 \
        -p 8088:8088 -p 10020:10020 -p 19888:19888  -p 50010:50010  -p 50020:50020  -p 50070:50070  -p 50075:50075  -p 50090:50090 \
         -p 8020:8020  -p 9000:9000 -v my/datanode/dir:/user/root/data/hadoop/hdfs/datanode -v my/namenode/dir:/user/root/data/hadoop/hdfs/namenode \
-         -v my/checkpoint/dir:/user/root/data/hadoop/hdfs/checkpoint --name my-apache-hadoop hellgate75/apache-hadoop:latest
+         -v my/checkpoint/dir:/user/root/data/hadoop/hdfs/checkpoint --name my-apache-hadoop hellgate75/apache-hadoop:2.6.5
 ```
 
 
