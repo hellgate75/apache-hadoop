@@ -85,6 +85,7 @@ Other Apache Hadoop ports:
 Here Apache Hadoop single mode container environment variables :
 
 * `MACHINE_TIMEZONE` : Set Machine timezone ([See Timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
+* `HADOOP_CONFIG_TGZ_URL` : Url of a tar gz file within Apache™ Hadoop® configuration files. If this archive contains a shell script named `bootstrap.sh`, it will be executed before to start Apache™ Hadoop® (default: "")
 * `APACHE_HADOOP_SITE_BUFFER_SIZE` : Set Hadoop Buffer Size (default: 131072)
 * `APACHE_HADOOP_SITE_HOSTNAME`: Set Hadoop master site hostname, as default `localhost` will be replaced with machine hostname
 
@@ -94,6 +95,7 @@ For more information about values : [Apache Hadoop Single Node](http://hadoop.ap
 Here Apache Hadoop cluster mode container environment variables :
 
 * `MACHINE_TIMEZONE` : Set Machine timezone ([See Timezones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
+* `HADOOP_CONFIG_TGZ_URL` : Url of a tar gz file within Apache™ Hadoop® configuration files. If this archive contains a shell script named `bootstrap.sh`, it will be executed before to start Apache™ Hadoop® (default: "")
 * `APACHE_HADOOP_IS_CLUSTER` : Set cluster mode (yes/no)
 * `APACHE_HADOOP_IS_MASTER` : Does this node lead cluster workers as the cluter master node? (yes/no)
 * `APACHE_HADOOP_SITE_BUFFER_SIZE` : Set Hadoop Buffer Size (default: 131072)
@@ -130,7 +132,7 @@ Here a sample command to run Apache Hadoop container:
 docker run -d -p 49707:49707 -p 2122:2122 -p 8030:8030 -p 8031:8031 -p 8032:8032 -p 8033:8033 -p 8040:8040 -p 8042:8042 \
        -p 8088:8088 -p 10020:10020 -p 19888:19888  -p 50010:50010  -p 50020:50020  -p 50070:50070  -p 50075:50075  -p 50090:50090 \
         -p 8020:8020  -p 9000:9000 -v my/datanode/dir:/user/root/data/hadoop/hdfs/datanode -v my/namenode/dir:/user/root/data/hadoop/hdfs/namenode \
-         -v my/checkpoint/dir:/user/root/data/hadoop/hdfs/checkpoint --name my-apache-hadoop hellgate75/apache-hadoop:latest
+         -v my/checkpoint/dir:/user/root/data/hadoop/hdfs/checkpoint --name my-apache-hadoop hellgate75/apache-hadoop:3.0.0-alpha3
 ```
 
 
