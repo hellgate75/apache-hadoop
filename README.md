@@ -5,7 +5,6 @@ Docker Image for Apache Hadoop Single/Cluster Node
 
 
 Provided Apache Hadoop docker images:
-* [Apache™ Hadoop® 2.5.2](https://github.com/hellgate75/apache-hadoop/tree/2.5.2)
 * [Apache™ Hadoop® 2.6.5](https://github.com/hellgate75/apache-hadoop/tree/2.6.5)
 * [Apache™ Hadoop® 2.7.3](https://github.com/hellgate75/apache-hadoop/tree/2.7.3)
 * [Apache™ Hadoop® 2.8.0](https://github.com/hellgate75/apache-hadoop/tree/2.8.0)
