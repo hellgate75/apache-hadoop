@@ -49,7 +49,7 @@ ENV APACHE_HADOOP_IS_CLUSTER=no \
     YARN_RESOURCEMANAGER_USER=root \
     YARN_NODEMANAGER_USER=root \
     HDFS_SECONDARYNAMENODE_USER=root \
-    PATH=$PATH:/usr/local/hadoop/bin:/usr/local/hadoop/sbin \
+    PATH=$PATH:/usr/local/hadoop/bin:/usr/local/hadoop/sbin:/usr/local/cmake/bin \
     BASH_ENV=/etc/profile
 
 USER root
@@ -71,6 +71,9 @@ RUN chmod 600 /root/.ssh/config && chown root:root /root/.ssh/config && mkdir /v
 # SSH login fix. Otherwise user is kicked off after login
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
     echo "export VISIBLE=now" >> /etc/profile
+
+COPY install-snappy.sh /etc/install-snappy.sh
+RUN chmod 777 /etc/install-snappy.sh && /etc/install-snappy.sh && rm -f /etc/install-snappy.sh
 
 # # installing supervisord
 # RUN yum install -y python-setuptools
